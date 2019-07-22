@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+  jira:
+    build: .
+    image: jira
+    container_name: myjira
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./certs:/etc/certs
+      - ./data:/var/atlassian/jira
+    logging:
+      driver: "json-file"
+      options:
+         max-size: "100m"
+

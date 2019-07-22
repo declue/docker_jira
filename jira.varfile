@@ -1,0 +1,10 @@
+rmiPort$Long=8005
+app.install.service$Boolean=False
+existingInstallationDir=/var/atlassian/jira
+app.jiraHome=/var/atlassian/jira
+sys.confirmedUpdateInstallationString=false
+sys.languageId=en
+sys.installationDir=/opt/jira
+executeLauncherAction$Boolean=true
+httpPort$Long=8080
+portChoice=custom
