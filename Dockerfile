@@ -1,28 +1,54 @@
 FROM declue/ubuntu:java11
 
-ARG JIRA_VERSION=8.3.0
-ARG JIRA_HOME=/opt/jira
+MAINTAINER bkperio@gmail.com
+
+# install default package
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get install -y wget
 
-# install jira
-RUN mkdir -p $JIRA_HOME
-RUN wget -O $JIRA_HOME/jira_$JIRA_VERSION.bin https://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-software-$JIRA_VERSION-x64.bin
-RUN chmod +x $JIRA_HOME/jira_$JIRA_VERSION.bin
-COPY jira.varfile $JIRA_HOME/jira.varfile
-RUN $JIRA_HOME/jira_$JIRA_VERSION.bin -q -varfile $JIRA_HOME/jira.varfile
+# install jira software
+ARG JIRA_VERSION=8.3.0
+ARG JIRA_HOME_PATH=/var/atlassian/jira
+ARG JIRA_INSTALL_PATH=/opt/jira
+ARG JIRA_SYSTEM_ARCH=x64
+ARG JIRA_INSTALL_FILE=atlassian-jira-software-$JIRA_VERSION-$JIRA_SYSTEM_ARCH.bin
+ARG JIRA_DOWNLOAD_URL=https://www.atlassian.com/software/jira/downloads/binary
 
-WORKDIR $JIRA_HOME
-EXPOSE 8080
+RUN mkdir -p $JIRA_INSTALL_PATH
+RUN wget -O $JIRA_INSTALL_PATH/$JIRA_INSTALL_FILE $JIRA_DOWNLOAD_URL/$JIRA_INSTALL_FILE
+RUN chmod +x $JIRA_INSTALL_PATH/$JIRA_INSTALL_FILE
+COPY jira.varfile $JIRA_INSTALL_PATH/jira.varfile
+RUN $JIRA_INSTALL_PATH/$JIRA_INSTALL_FILE -q -varfile $JIRA_INSTALL_PATH/jira.varfile
 
-# install mysql
+# install mysql-jdbc connector
 ARG MYSQL_VERSION=5.1.47
-RUN wget -O $JIRA_HOME/connector-$MYSQL_VERSION.tar.gz https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-$MYSQL_VERSION.tar.gz
-RUN tar xzf $JIRA_HOME/connector-$MYSQL_VERSION.tar.gz --strip=1
-RUN cp $JIRA_HOME/mysql-connector-java-$MYSQL_VERSION-bin.jar $JIRA_HOME/lib/mysql-connector-java-$MYSQL_VERSION-bin.jar
+ARG MYSQL_DOWNLOAD_URL=https://dev.mysql.com/get/Downloads/Connector-J
+ARG MYSQL_DOWNLOAD_FILE=mysql-connector-java-$MYSQL_VERSION.tar.gz
+ARG MYSQL_CONNECTOR_FILE=mysql-connector-java-$MYSQL_VERSION-bin.jar 
+
+RUN wget -O $JIRA_INSTALL_PATH/$MYSQL_DOWNLOAD_FILE $MYSQL_DOWNLOAD_URL/$MYSQL_DOWNLOAD_FILE
+RUN tar xzf $JIRA_INSTALL_PATH/$MYSQL_DOWNLOAD_FILE --strip=1
+RUN mv $MYSQL_CONNECTOR_FILE  $JIRA_INSTALL_PATH/lib/$MYSQL_CONNECTOR_FILE
+
+# set entrypoint
+COPY entrypoint.sh $JIRA_INSTALL_PATH/entrypoint.sh
+RUN chmod +x $JIRA_INSTALL_PATH/entrypoint.sh
+
+# create user
+ENV JIRA_USER=jira
+ENV JIRA_GROUP=jira
+ENV CONTAINER_UID=1000
+
+#RUN adduser --uid $CONTAINER_UID --system --home /home/$JIRA_USER --shell /bin/bash $JIRA_USER
+RUN mkdir -p $JIRA_HOME_PATH
+RUN chown -R $JIRA_USER:$JIRA_GROUP $JIRA_HOME_PATH
+RUN chown -R $JIRA_USER:$JIRA_GROUP $JIRA_INSTALL_PATH
 
 # start jira
+WORKDIR $JIRA_HOME_PATH
+EXPOSE 8080
+USER $JIRA_USER
+
 CMD ["/opt/jira/bin/start-jira.sh", "-fg"]
-COPY entrypoint.sh /opt/jira/entrypoint.sh
-RUN chmod +x /opt/jira/entrypoint.sh
-ENTRYPOINT ["/opt/jira/entrypoint.sh"]
+ENTRYPOINT ["/opt/jira/entrypoint.sh"]]

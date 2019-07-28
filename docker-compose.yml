@@ -3,7 +3,7 @@ version: '3.1'
 services:
   jira:
     build: .
-    image: jira
+    image: declue/jira:8.3.0
     container_name: myjira
     ports:
       - "8080:8080"
@@ -13,5 +13,4 @@ services:
     logging:
       driver: "json-file"
       options:
-         max-size: "100m"
-
+          max-size: "100m"
