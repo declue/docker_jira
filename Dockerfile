@@ -1,14 +1,15 @@
-FROM declue/ubuntu:java11
+FROM ghcr.io/declue/docker_ubuntu:20.04
 
 MAINTAINER bkperio@gmail.com
 
 # install default package
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get install -y wget
+# install java
+RUN apt-get install -y openjdk-11-jre
 
 # install jira software
-ARG JIRA_VERSION=8.3.0
+ARG JIRA_VERSION=9.5.0
 ARG JIRA_HOME_PATH=/var/atlassian/jira
 ARG JIRA_INSTALL_PATH=/opt/jira
 ARG JIRA_SYSTEM_ARCH=x64
@@ -22,7 +23,7 @@ COPY jira.varfile $JIRA_INSTALL_PATH/jira.varfile
 RUN $JIRA_INSTALL_PATH/$JIRA_INSTALL_FILE -q -varfile $JIRA_INSTALL_PATH/jira.varfile
 
 # install mysql-jdbc connector
-ARG MYSQL_VERSION=5.1.47
+ARG MYSQL_VERSION=8
 ARG MYSQL_DOWNLOAD_URL=https://dev.mysql.com/get/Downloads/Connector-J
 ARG MYSQL_DOWNLOAD_FILE=mysql-connector-java-$MYSQL_VERSION.tar.gz
 ARG MYSQL_CONNECTOR_FILE=mysql-connector-java-$MYSQL_VERSION-bin.jar 
