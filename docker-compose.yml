@@ -1,9 +1,25 @@
-
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: jira-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: changeit
+      MYSQL_DATABASE: jira
+      TZ: Asia/Seoul
+    command:
+    - --character-set-server=utf8mb4
+    - --collation-server=utf8mb4_bin
+    - --skip-character-set-client-handshake
+    volumes:
+    - ./db/data:/var/lib/mysql
+    - ./db/config:/etc/mysql/conf.d
+    - ./db/files:/var/lib/mysql-files
+    - ./db/logs:/var/log/mysql
+ 
   jira:
     build: .
-    image: declue/jira:9.5.0
-    container_name: myjira
+    image: ghcr.io/declue/docker_jira:main
+    container_name: jira
     ports:
       - "8080:8080"
     volumes:
@@ -13,3 +29,4 @@ services:
       driver: "json-file"
       options:
           max-size: "100m"
+
