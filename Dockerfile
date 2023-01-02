@@ -25,8 +25,8 @@ RUN $JIRA_INSTALL_PATH/$JIRA_INSTALL_FILE -q -varfile $JIRA_INSTALL_PATH/jira.va
 # install mysql-jdbc connector
 ARG MYSQL_VERSION=8.0.31
 ARG MYSQL_DOWNLOAD_URL=https://dev.mysql.com/get/Downloads/Connector-J
-ARG MYSQL_DOWNLOAD_FILE=mysql-connector-java-$MYSQL_VERSION.tar.gz
-ARG MYSQL_CONNECTOR_FILE=mysql-connector-java-$MYSQL_VERSION-bin.jar 
+ARG MYSQL_DOWNLOAD_FILE=mysql-connector-j-$MYSQL_VERSION.tar.gz
+ARG MYSQL_CONNECTOR_FILE=mysql-connector-j-$MYSQL_VERSION-bin.jar 
 
 RUN wget -O $JIRA_INSTALL_PATH/$MYSQL_DOWNLOAD_FILE $MYSQL_DOWNLOAD_URL/$MYSQL_DOWNLOAD_FILE
 RUN tar xzf $JIRA_INSTALL_PATH/$MYSQL_DOWNLOAD_FILE --strip=1
