@@ -1,11 +1,8 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: jira-mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: changeit
-      MYSQL_DATABASE: jira
-      TZ: Asia/Seoul
+    env_file:
+      - ".env"
     command:
     - --character-set-server=utf8mb4
     - --collation-server=utf8mb4_bin
@@ -17,14 +14,21 @@ services:
     - ./db/logs:/var/log/mysql
  
   jira:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        JIRA_VERSION: ${JIRA_VERSION}
+        MYSQL_VERSION: ${MYSQL_VERSION}
+
+    env_file:
+      - ".env"
     image: ghcr.io/declue/docker_jira:main
-    container_name: jira
     ports:
       - "8080:8080"
     volumes:
-      - ./certs:/etc/certs
-      - ./data:/var/atlassian/jira
+      - ./jira/certs:/etc/certs
+      - ./jira/data:/var/atlassian/jira
     logging:
       driver: "json-file"
       options:
