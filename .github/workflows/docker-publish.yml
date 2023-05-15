@@ -47,6 +47,12 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      - name: Set JIRA_VERSION environment variable
+        id: set-jira-version
+        run: |
+            JIRA_VERSION=$(echo "${{ github.ref }}" | sed -n 's|^refs/tags/v\([0-9]\+\.[0-9]\+\.[0-9]\+\)|\1|p')
+            echo "JIRA_VERSION=${JIRA_VERSION}" >> $GITHUB_ENV
+
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
@@ -57,7 +63,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: JIRA_VERSION=$(echo "${{ github.ref }}" | sed -n 's|refs/tags/v\([0-9]\+\.[0-9]\+\.[0-9]\+\)|\1|p')
+          build-args: JIRA_VERSION=${{ env.JIRA_VERSION }}
 
 #      - name: Sign the published Docker image
 #        if: ${{ github.event_name != 'pull_request' }}
