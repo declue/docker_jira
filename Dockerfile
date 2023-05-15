@@ -1,4 +1,4 @@
-FROM ghcr.io/declue/docker_ubuntu:20.04
+FROM --platform=linux/amd64  ghcr.io/declue/docker_ubuntu:20.04
 
 MAINTAINER bkperio@gmail.com
 
