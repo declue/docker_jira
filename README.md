@@ -7,4 +7,4 @@ docker pull ghcr.io/declue/docker_jira:9.8.1
 ```
 
 자세한 패키지 정보는 아래 링크 참조
-https://github.com/declue/docker_jira/pkgs/container/docker_jira
+- https://github.com/declue/docker_jira/pkgs/container/docker_jira
