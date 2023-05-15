@@ -9,7 +9,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-
+  MYSQL_VERSION: "8.0.31"
 
 jobs:
   build:
