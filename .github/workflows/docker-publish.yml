@@ -65,7 +65,7 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             JIRA_VERSION=${{ env.JIRA_VERSION }}
-            MYSQL_VERSION={{ env.MYSQL_VERSION }}
+            MYSQL_VERSION=${{ env.MYSQL_VERSION }}
 
 #      - name: Sign the published Docker image
 #        if: ${{ github.event_name != 'pull_request' }}
