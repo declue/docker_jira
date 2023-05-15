@@ -63,7 +63,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: JIRA_VERSION=${{ env.JIRA_VERSION }}
+          build-args: JIRA_VERSION=${{ env.JIRA_VERSION }},MYSQL_VERSION={{ env.MYSQL_VERSION }}
 
 #      - name: Sign the published Docker image
 #        if: ${{ github.event_name != 'pull_request' }}
